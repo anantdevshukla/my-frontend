@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%231261A0'/><path d='M30 50h40M50 30v40' stroke='%2318C7D1' stroke-width='8' stroke-linecap='round'/></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biofilm AI — AI-Driven Hyperspectral Biofilm Profiling</title>
+    <meta name="description" content="AI-assisted spectral–spatial analysis for classification of pathogens in mixed biofilm environments." />
+    
+    <!-- Google Fonts: Inter (UI & Body), Space Grotesk (Headings), JetBrains Mono (Technical Metrics only) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN with custom Biofilm AI scientific configuration -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+              display: ['"Space Grotesk"', '"Inter"', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'monospace'],
+            },
+            colors: {
+              // Exact Specified Brand Palette
+              brand: {
+                blue: '#1261A0',
+                cyan: '#18C7D1',
+                electric: '#35B9E9',
+                violet: '#7568F7',
+                softViolet: '#9B91FF',
+                // Light mode variants
+                lightCyan: '#10AFC0',
+                lightElectric: '#237FB3',
+                lightViolet: '#665BE8',
+              },
+              // Dark Mode Surfaces (Deep Navy / Charcoal, NO pure black)
+              dark: {
+                bg: '#07111F',
+                secondary: '#0B1726',
+                surface: '#0F2032',
+                card: '#0F2032',
+                elevated: '#13283C',
+                highest: '#172F46',
+                textPrimary: '#F4F8FC',
+                textSecondary: '#A9B9C9',
+                textMuted: '#71879B',
+                border: '#233B50',
+                borderSubtle: '#1A3043',
+              },
+              // Light Mode Surfaces (Crisp Scientific Analytics)
+              light: {
+                bg: '#F6F9FC',
+                secondary: '#EDF3F7',
+                surface: '#FFFFFF',
+                card: '#FFFFFF',
+                elevated: '#F9FCFE',
+                textPrimary: '#102A43',
+                textSecondary: '#506579',
+                textMuted: '#74899A',
+                border: '#D8E3EA',
+              },
+              // Status Palette
+              status: {
+                successDark: '#29C98A',
+                successLight: '#179B68',
+                warningDark: '#F0BA4B',
+                warningLight: '#C68B19',
+                errorDark: '#FF6B6B',
+                errorLight: '#C94B4B',
+              }
+            }
+          }
+        }
+      }
+    </script>
+
+    <!-- Three.js & OrbitControls from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  </head>
+  <body class="bg-[#F6F9FC] dark:bg-[#07111F] text-[#102A43] dark:text-[#F4F8FC] font-sans antialiased transition-colors duration-200 overflow-x-hidden min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

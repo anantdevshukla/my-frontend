@@ -1,0 +1,207 @@
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* ========================================================
+   BIOFILM AI — SCIENTIFIC RESEARCH & PRODUCT DESIGN SYSTEM
+   ======================================================== */
+
+:root {
+  color-scheme: light dark;
+}
+
+/* LIGHT THEME (Crisp Clinical Analytics Platform) */
+html:not(.dark) {
+  --bg-main: #F6F9FC;
+  --bg-secondary: #EDF3F7;
+  --bg-card: #FFFFFF;
+  --bg-elevated: #F9FCFE;
+  
+  --text-primary: #102A43;
+  --text-secondary: #506579;
+  --text-muted: #74899A;
+  
+  --border-color: #D8E3EA;
+  --border-subtle: #E6EDF2;
+  --border-accent: #10AFC0;
+  
+  --brand-primary: #1261A0;
+  --brand-cyan: #10AFC0;
+  --brand-electric: #237FB3;
+  --brand-violet: #665BE8;
+  
+  --status-success: #179B68;
+  --status-warning: #C68B19;
+  --status-error: #C94B4B;
+  
+  --card-shadow: 0 1px 3px 0 rgba(16, 42, 67, 0.04), 0 1px 2px -1px rgba(16, 42, 67, 0.03);
+  --card-shadow-elevated: 0 4px 16px -2px rgba(16, 42, 67, 0.06), 0 2px 6px -1px rgba(16, 42, 67, 0.03);
+}
+
+/* DARK THEME (Advanced AI Research Laboratory) */
+html.dark {
+  --bg-main: #07111F;
+  --bg-secondary: #0B1726;
+  --bg-card: #0F2032;
+  --bg-elevated: #13283C;
+  --bg-highest: #172F46;
+  
+  --text-primary: #F4F8FC;
+  --text-secondary: #A9B9C9;
+  --text-muted: #71879B;
+  
+  --border-color: #233B50;
+  --border-subtle: #1A3043;
+  --border-accent: #18C7D1;
+  
+  --brand-primary: #1261A0;
+  --brand-cyan: #18C7D1;
+  --brand-electric: #35B9E9;
+  --brand-violet: #7568F7;
+  
+  --status-success: #29C98A;
+  --status-warning: #F0BA4B;
+  --status-error: #FF6B6B;
+  
+  --card-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.25);
+  --card-shadow-elevated: 0 8px 24px -4px rgba(0, 0, 0, 0.45);
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'tnum';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+  letter-spacing: -0.011em;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Headings with Space Grotesk */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+
+/* Monospace restricted strictly to technical metrics */
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-feature-settings: 'zero', 'tnum';
+}
+
+/* Minimal Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-cyan);
+}
+
+/* ========================================================
+   SIGNATURE BRAND GRADIENT
+   #1261A0 -> #18C7D1 -> #7568F7
+   ======================================================== */
+.signature-gradient {
+  background: linear-gradient(135deg, #1261A0 0%, #18C7D1 50%, #7568F7 100%);
+}
+
+.signature-gradient-text {
+  background: linear-gradient(135deg, #1261A0 0%, #18C7D1 50%, #7568F7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+html.dark .signature-gradient-text {
+  background: linear-gradient(135deg, #35B9E9 0%, #18C7D1 50%, #9B91FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ========================================================
+   PREMIUM SCIENTIFIC CARD SYSTEM
+   ======================================================== */
+.sci-surface {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+  border-radius: 1.125rem; /* 18px */
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sci-surface-elevated {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow-elevated);
+  border-radius: 1.125rem; /* 18px */
+  transition: all 0.2s ease;
+}
+
+.sci-surface-interactive {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+  border-radius: 1.125rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sci-surface-interactive:hover {
+  border-color: var(--border-accent);
+  transform: translateY(-2px);
+}
+html.dark .sci-surface-interactive:hover {
+  box-shadow: 0 8px 24px -4px rgba(24, 199, 209, 0.1);
+}
+
+/* Faint, elegant scientific grid for hero & visualization backgrounds */
+.faint-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(18, 97, 160, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(18, 97, 160, 0.035) 1px, transparent 1px);
+}
+html.dark .faint-grid {
+  background-image: 
+    linear-gradient(to right, rgba(53, 185, 233, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(53, 185, 233, 0.03) 1px, transparent 1px);
+}
+
+/* Laser sweep animation for data ingestion */
+@keyframes laser-sweep {
+  0% { top: 0%; opacity: 0.6; }
+  50% { opacity: 0.9; }
+  100% { top: 100%; opacity: 0.2; }
+}
+
+.laser-scanner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #18C7D1, #7568F7, transparent);
+  box-shadow: 0 0 10px rgba(24, 199, 209, 0.4);
+  animation: laser-sweep 2.4s ease-in-out infinite;
+}
+
+/* Pulse animation for node interaction */
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.75; transform: scale(1.04); }
+}
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
