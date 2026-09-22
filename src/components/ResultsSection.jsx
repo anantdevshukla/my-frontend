@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import { BIOFILM_SPECIES, getBiofilmByQuery } from '../utils/biofilmAssets';
 
 export const PATHOGEN_INFO = {
   'Escherichia coli': {
     shortName: 'E. coli',
     gram: 'Gram-negative',
-    morphology: 'Rod (Bacillus)',
+    morphology: 'Rod (Bacillus 0.5 × 2.0 µm)',
     biofilmRisk: 'High (Urinary & Catheter Biofilms)',
     pigmentPeak: '520 - 580 nm',
     description: 'Forms dense curli fiber and cellulose-rich biofilms resistant to standard antimicrobial penetration.',
@@ -13,7 +14,7 @@ export const PATHOGEN_INFO = {
   'Enterococcus faecalis': {
     shortName: 'E. faecalis',
     gram: 'Gram-positive',
-    morphology: 'Cocci (Pairs & Chains)',
+    morphology: 'Cocci (Pairs & Chains 0.6 - 1.2 µm)',
     biofilmRisk: 'Severe (Endodontic & Nosocomial)',
     pigmentPeak: '490 - 540 nm',
     description: 'Forms persistent calcified biofilm matrices in root canals, heart valves, and surgical devices.',
@@ -22,7 +23,7 @@ export const PATHOGEN_INFO = {
   'Staphylococcus aureus': {
     shortName: 'S. aureus',
     gram: 'Gram-positive',
-    morphology: 'Cocci (Grape-like Clusters)',
+    morphology: 'Cocci (Grape-like Clusters 0.8 - 1.0 µm)',
     biofilmRisk: 'Critical (MRSA & Prosthetic Joint)',
     pigmentPeak: '450 - 510 nm',
     description: 'Produces staphyloxanthin carotenoids and polysaccharide intercellular adhesin (PIA) matrix.',
@@ -31,7 +32,7 @@ export const PATHOGEN_INFO = {
   'Klebsiella pneumoniae': {
     shortName: 'K. pneumoniae',
     gram: 'Gram-negative',
-    morphology: 'Encapsulated Rod',
+    morphology: 'Encapsulated Rod (0.5 × 1.2 µm)',
     biofilmRisk: 'Critical (Ventilator & Catheter)',
     pigmentPeak: '560 - 620 nm',
     description: 'Hypervirulent capsule polysaccharides impede phagocytosis and hyperspectral reflectance dispersion.',
@@ -40,7 +41,7 @@ export const PATHOGEN_INFO = {
   'Pseudomonas aeruginosa': {
     shortName: 'P. aeruginosa',
     gram: 'Gram-negative',
-    morphology: 'Flagellated Rod',
+    morphology: 'Flagellated Rod (0.6 × 1.5 µm)',
     biofilmRisk: 'Extreme (Cystic Fibrosis & Wounds)',
     pigmentPeak: '690 - 740 nm (Pyocyanin)',
     description: 'Produces distinct redox-active pyocyanin and robust alginate extracellular slime.',
@@ -49,7 +50,7 @@ export const PATHOGEN_INFO = {
   'Candida albicans': {
     shortName: 'C. albicans',
     gram: 'Fungal Yeast',
-    morphology: 'Dimorphic (Yeast & Hyphae)',
+    morphology: 'Dimorphic (Yeast & Hyphae 4.0 - 6.0 µm)',
     biofilmRisk: 'High (Mucosal & Medical Devices)',
     pigmentPeak: '600 - 660 nm',
     description: 'Forms complex multi-layered polymicrobial biofilms with extensive fungal hyphal meshworks.',
@@ -58,41 +59,20 @@ export const PATHOGEN_INFO = {
 };
 
 export default function ResultsSection({ predictionResult, rawApiResponse, onReset }) {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('morphology');
   const [copied, setCopied] = useState(false);
+  const [isMixedActive, setIsMixedActive] = useState(true);
 
   if (!predictionResult) return null;
 
   const { predictedClass, confidence, probabilities, inferenceTime, filename } = predictionResult;
-  const pathogen = PATHOGEN_INFO[predictedClass] || {
-    shortName: predictedClass,
-    gram: 'Microbial Target',
-    morphology: 'Cellular isolate',
-    biofilmRisk: 'Identified Strain',
-    pigmentPeak: 'Multi-band',
-    description: 'Hyperspectral bio-signature verified by deep neural network.',
-    accentColor: '#1261A0'
-  };
+  const bio = getBiofilmByQuery(predictedClass);
 
   const handleCopyJson = () => {
     navigator.clipboard.writeText(JSON.stringify(rawApiResponse || predictionResult, null, 2));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
-  const spectralPoints = [
-    { wl: 420, abs: 0.32 + Math.random() * 0.08 },
-    { wl: 460, abs: 0.48 + Math.random() * 0.08 },
-    { wl: 500, abs: 0.74 + Math.random() * 0.1 },
-    { wl: 540, abs: 0.91 + Math.random() * 0.07 },
-    { wl: 580, abs: 0.65 + Math.random() * 0.08 },
-    { wl: 620, abs: 0.42 + Math.random() * 0.08 },
-    { wl: 660, abs: 0.58 + Math.random() * 0.09 },
-    { wl: 700, abs: 0.82 + Math.random() * 0.08 },
-    { wl: 740, abs: 0.46 + Math.random() * 0.07 },
-    { wl: 780, abs: 0.36 + Math.random() * 0.06 },
-    { wl: 820, abs: 0.28 + Math.random() * 0.05 }
-  ];
 
   return (
     <div className="scientific-card p-6 sm:p-7 relative overflow-hidden animate-fadeIn">
@@ -132,7 +112,7 @@ export default function ResultsSection({ predictionResult, rawApiResponse, onRes
                 Predicted Pathogen
               </span>
               <span className="px-2 py-0.5 rounded text-[10px] font-mono border border-light-border dark:border-dark-border text-light-textSecondary dark:text-dark-textSecondary">
-                {pathogen.gram} • {pathogen.morphology}
+                {bio.gram} • {bio.morphology}
               </span>
             </div>
 
@@ -141,7 +121,7 @@ export default function ResultsSection({ predictionResult, rawApiResponse, onRes
             </h2>
 
             <p className="text-xs sm:text-sm text-light-textSecondary dark:text-dark-textSecondary mt-2 max-w-xl leading-relaxed">
-              {pathogen.description}
+              {bio.desc}
             </p>
           </div>
 
@@ -167,155 +147,172 @@ export default function ResultsSection({ predictionResult, rawApiResponse, onRes
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 mt-6 border-b border-light-border dark:border-dark-border pb-2">
-        <button
-          onClick={() => setActiveTab('overview')}
-          className={`px-3.5 py-1.5 rounded-md text-xs font-mono font-medium transition cursor-pointer ${
-            activeTab === 'overview'
-              ? 'bg-light-secondary dark:bg-dark-secondary text-brand-blue dark:text-brand-electric font-semibold border border-light-border dark:border-dark-border'
-              : 'text-light-textSecondary dark:text-dark-textSecondary hover:text-light-textPrimary dark:hover:text-dark-textPrimary'
-          }`}
-        >
-          Probability Vector
-        </button>
-        <button
-          onClick={() => setActiveTab('spectral')}
-          className={`px-3.5 py-1.5 rounded-md text-xs font-mono font-medium transition cursor-pointer ${
-            activeTab === 'spectral'
-              ? 'bg-light-secondary dark:bg-dark-secondary text-brand-blue dark:text-brand-electric font-semibold border border-light-border dark:border-dark-border'
-              : 'text-light-textSecondary dark:text-dark-textSecondary hover:text-light-textPrimary dark:hover:text-dark-textPrimary'
-          }`}
-        >
-          Spectral Absorbance Curve
-        </button>
-        <button
-          onClick={() => setActiveTab('raw')}
-          className={`px-3.5 py-1.5 rounded-md text-xs font-mono font-medium transition cursor-pointer ${
-            activeTab === 'raw'
-              ? 'bg-light-secondary dark:bg-dark-secondary text-brand-blue dark:text-brand-electric font-semibold border border-light-border dark:border-dark-border'
-              : 'text-light-textSecondary dark:text-dark-textSecondary hover:text-light-textPrimary dark:hover:text-dark-textPrimary'
-          }`}
-        >
-          Raw JSON Response
-        </button>
+      <div className="flex items-center gap-2 mt-6 border-b border-light-border dark:border-dark-border pb-2 overflow-x-auto">
+        {['morphology', 'spectral', 'biofilm', 'actionable', 'probabilities', 'raw'].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-3.5 py-1.5 rounded-md text-xs font-mono font-medium transition cursor-pointer capitalize whitespace-nowrap ${
+              activeTab === tab
+                ? 'bg-light-secondary dark:bg-dark-secondary text-brand-blue dark:text-brand-electric font-semibold border border-light-border dark:border-dark-border'
+                : 'text-light-textSecondary dark:text-dark-textSecondary hover:text-light-textPrimary dark:hover:text-dark-textPrimary'
+            }`}
+          >
+            {tab === 'morphology' && '🧬 Morphology'}
+            {tab === 'spectral' && '🌈 Spectral Signature'}
+            {tab === 'biofilm' && '🦠 Biofilm & Mixed Matrix'}
+            {tab === 'actionable' && '🎯 Actionable Output'}
+            {tab === 'probabilities' && '📊 Probabilities'}
+            {tab === 'raw' && 'Payload JSON'}
+          </button>
+        ))}
       </div>
 
-      {/* Probability Breakdown */}
-      {activeTab === 'overview' && (
-        <div className="mt-5 space-y-3">
-          <div className="text-xs font-mono text-light-textSecondary dark:text-dark-textSecondary flex items-center justify-between">
-            <span>6-Class Softmax Probability Distribution</span>
-            <span>Target Benchmark: 85.3%</span>
+      {/* Morphology Tab */}
+      {activeTab === 'morphology' && bio.morphologyDetails && (
+        <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+          <div className="p-4 rounded-lg bg-light-secondary/40 dark:bg-dark-secondary/40 border border-light-border dark:border-dark-border space-y-2">
+            <span className="text-[10px] text-light-textMuted dark:text-dark-textMuted uppercase font-bold">Cellular Geometry</span>
+            <div className="font-bold text-sm text-light-textPrimary dark:text-dark-textPrimary">{bio.morphologyDetails.shape}</div>
+            <div className="text-light-textSecondary dark:text-dark-textSecondary">Dimensions: {bio.morphologyDetails.dimensions}</div>
+            <div className="text-light-textSecondary dark:text-dark-textSecondary">Gram Status: {bio.morphologyDetails.gramStain}</div>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {probabilities &&
-              Object.entries(probabilities).map(([className, prob]) => {
-                const isWinner = className === predictedClass;
-                const percentage = (prob * 100).toFixed(1);
-
-                return (
-                  <div
-                    key={className}
-                    className={`p-3 rounded-lg border transition-all ${
-                      isWinner
-                        ? 'bg-light-elevated dark:bg-dark-elevated border-brand-cyan shadow-sm ring-1 ring-brand-cyan/40'
-                        : 'bg-light-card dark:bg-dark-card border-light-border dark:border-dark-border'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between text-xs mb-1.5">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`font-mono font-semibold ${
-                            isWinner
-                              ? 'text-brand-blue dark:text-brand-electric'
-                              : 'text-light-textPrimary dark:text-dark-textPrimary'
-                          }`}
-                        >
-                          {className}
-                        </span>
-                        {isWinner && (
-                          <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-brand-cyan/20 text-brand-cyan font-bold">
-                            TOP MATCH
-                          </span>
-                        )}
-                      </div>
-                      <span className="font-mono text-xs font-semibold text-light-textPrimary dark:text-dark-textPrimary">
-                        {percentage}%
-                      </span>
-                    </div>
-
-                    <div className="w-full bg-light-secondary dark:bg-dark-secondary h-1.5 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all duration-500 ${
-                          isWinner ? 'bg-brand-cyan' : 'bg-light-textMuted/40 dark:bg-dark-textMuted/40'
-                        }`}
-                        style={{ width: `${Math.max(prob * 100, 2)}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                );
-              })}
+          <div className="p-4 rounded-lg bg-light-secondary/40 dark:bg-dark-secondary/40 border border-light-border dark:border-dark-border space-y-2">
+            <span className="text-[10px] text-light-textMuted dark:text-dark-textMuted uppercase font-bold">Envelope & Appendages</span>
+            <div className="text-light-textSecondary dark:text-dark-textSecondary">Motility: {bio.morphologyDetails.motilityAndAppendages}</div>
+            <div className="text-light-textSecondary dark:text-dark-textSecondary">Aggregation: {bio.morphologyDetails.spatialAggregation}</div>
           </div>
         </div>
       )}
 
-      {/* Spectral Absorbance Curve */}
-      {activeTab === 'spectral' && (
-        <div className="mt-5 p-4 rounded-lg bg-light-secondary/50 dark:bg-dark-secondary/50 border border-light-border dark:border-dark-border">
-          <div className="flex items-center justify-between mb-3 text-xs font-mono">
+      {/* Spectral Tab */}
+      {activeTab === 'spectral' && bio.spectralDetails && (
+        <div className="mt-5 p-4 rounded-lg bg-light-secondary/50 dark:bg-dark-secondary/50 border border-light-border dark:border-dark-border space-y-4">
+          <div className="flex items-center justify-between text-xs font-mono">
             <span className="text-brand-blue dark:text-brand-electric font-medium">
-              Spectral Absorbance Curve (400 - 850 nm)
+              Peak: {bio.spectralDetails.dominantPeak}
             </span>
             <span className="text-light-textSecondary dark:text-dark-textSecondary">
-              Dominant Absorption: {pathogen.pigmentPeak}
+              {bio.spectralDetails.samMatchScore}
             </span>
           </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono">
+            {bio.spectralDetails.chemicalBonds.map((b, idx) => (
+              <div key={idx} className="p-2.5 rounded bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border flex justify-between">
+                <span>{b.bond}</span>
+                <span className="text-brand-cyan font-bold">{b.wavenum}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-          <div className="h-40 w-full relative">
-            <svg className="w-full h-full" viewBox="0 0 500 150" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="scientificSpectralGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#1261A0" />
-                  <stop offset="50%" stopColor="#16C7C7" />
-                  <stop offset="100%" stopColor="#6C63FF" />
-                </linearGradient>
-              </defs>
-
-              <line x1="0" y1="35" x2="500" y2="35" stroke="#D9E4EC" strokeDasharray="3 3" strokeWidth="0.8" className="dark:stroke-[#243A4D]" />
-              <line x1="0" y1="75" x2="500" y2="75" stroke="#D9E4EC" strokeDasharray="3 3" strokeWidth="0.8" className="dark:stroke-[#243A4D]" />
-              <line x1="0" y1="115" x2="500" y2="115" stroke="#D9E4EC" strokeDasharray="3 3" strokeWidth="0.8" className="dark:stroke-[#243A4D]" />
-
-              <path
-                d="M 0 95 Q 125 15 250 25 T 500 105"
-                fill="none"
-                stroke="url(#scientificSpectralGrad)"
-                strokeWidth="3"
-              />
-
-              {spectralPoints.map((p, idx) => {
-                const x = (idx / (spectralPoints.length - 1)) * 480 + 10;
-                const y = 140 - p.abs * 110;
-                return (
-                  <circle
-                    key={idx}
-                    cx={x}
-                    cy={y}
-                    r="3.5"
-                    fill="#16C7C7"
-                    stroke="#122436"
-                    strokeWidth="1.5"
-                  />
-                );
-              })}
-            </svg>
+      {/* Biofilm Tab */}
+      {activeTab === 'biofilm' && bio.biofilmCharacteristics && (
+        <div className="mt-5 space-y-4 text-xs font-mono">
+          <div className="flex justify-between items-center">
+            <span className="font-bold text-light-textPrimary dark:text-dark-textPrimary">Biofilm Physical & Hydrogel Matrix</span>
+            <button
+              onClick={() => setIsMixedActive(!isMixedActive)}
+              className="px-2.5 py-1 rounded bg-brand-cyan/20 text-brand-cyan font-bold cursor-pointer"
+            >
+              {isMixedActive ? '⚠️ Mixed Biofilm Active' : 'Mono-Culture Mode'}
+            </button>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="p-2.5 rounded bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border">
+              <div className="text-[10px] text-light-textMuted dark:text-dark-textMuted">Stage</div>
+              <div className="font-bold">{bio.biofilmCharacteristics.maturityStage.split(' - ')[0]}</div>
+            </div>
+            <div className="p-2.5 rounded bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border">
+              <div className="text-[10px] text-light-textMuted dark:text-dark-textMuted">Thickness</div>
+              <div className="font-bold">{bio.biofilmCharacteristics.matrixThickness}</div>
+            </div>
+            <div className="p-2.5 rounded bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border">
+              <div className="text-[10px] text-light-textMuted dark:text-dark-textMuted">Viscoelasticity</div>
+              <div className="font-bold">{bio.biofilmCharacteristics.matrixViscoelasticity}</div>
+            </div>
+            <div className="p-2.5 rounded bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border">
+              <div className="text-[10px] text-light-textMuted dark:text-dark-textMuted">Recalcitrance</div>
+              <div className="font-bold text-brand-electric">{bio.biofilmCharacteristics.recalcitranceIndex}</div>
+            </div>
           </div>
 
-          <div className="flex justify-between text-[10px] font-mono text-light-textMuted dark:text-dark-textMuted mt-2 border-t border-light-border dark:border-dark-border pt-2">
-            <span>400 nm (UV)</span>
-            <span>550 nm (Visible)</span>
-            <span>700 nm (Far Red)</span>
-            <span>850 nm (NIR)</span>
+          {isMixedActive && bio.biofilmCharacteristics.mixedBiofilmData && (
+            <div className="p-4 rounded-lg bg-light-elevated dark:bg-dark-elevated border border-brand-cyan/40 space-y-2">
+              <div className="text-brand-electric font-bold">Mixed Biofilm: {bio.biofilmCharacteristics.mixedBiofilmData.coColonizationSynergy}</div>
+              <p className="text-light-textSecondary dark:text-dark-textSecondary leading-relaxed">{bio.biofilmCharacteristics.mixedBiofilmData.matrixSynergyDescription}</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Actionable Output Tab */}
+      {activeTab === 'actionable' && bio.actionableOutput && (
+        <div className="mt-5 space-y-4 text-xs font-mono">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="p-2.5 rounded bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border">
+              <div className="text-[10px] text-light-textMuted dark:text-dark-textMuted">Disruption Rate</div>
+              <div className="font-bold text-status-successLight dark:text-status-successDark">{bio.actionableOutput.expectedOutcome.matrixDisruptionRate}</div>
+            </div>
+            <div className="p-2.5 rounded bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border">
+              <div className="text-[10px] text-light-textMuted dark:text-dark-textMuted">Sensitivity Boost</div>
+              <div className="font-bold text-brand-cyan">{bio.actionableOutput.expectedOutcome.susceptibilityRestoration}</div>
+            </div>
+            <div className="p-2.5 rounded bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border">
+              <div className="text-[10px] text-light-textMuted dark:text-dark-textMuted">Clearance Time</div>
+              <div className="font-bold">{bio.actionableOutput.expectedOutcome.clearanceTimeframe}</div>
+            </div>
+            <div className="p-2.5 rounded bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border">
+              <div className="text-[10px] text-light-textMuted dark:text-dark-textMuted">Recurrence Drop</div>
+              <div className="font-bold text-brand-electric">{bio.actionableOutput.expectedOutcome.recurrenceReduction}</div>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="font-bold text-light-textPrimary dark:text-dark-textPrimary">Recommended Protocols:</div>
+            {bio.actionableOutput.recommendedActions.map((act, i) => (
+              <div key={i} className="p-3 rounded bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border">
+                <div className="font-bold text-brand-blue dark:text-brand-electric">{act.title}</div>
+                <div className="text-light-textSecondary dark:text-dark-textSecondary mt-1">{act.protocol}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Probabilities Tab */}
+      {activeTab === 'probabilities' && probabilities && (
+        <div className="mt-5 space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {Object.entries(probabilities).map(([className, prob]) => {
+              const isWinner = className === predictedClass;
+              const percentage = (prob * 100).toFixed(1);
+
+              return (
+                <div
+                  key={className}
+                  className={`p-3 rounded-lg border transition-all ${
+                    isWinner
+                      ? 'bg-light-elevated dark:bg-dark-elevated border-brand-cyan shadow-sm ring-1 ring-brand-cyan/40'
+                      : 'bg-light-card dark:bg-dark-card border-light-border dark:border-dark-border'
+                  }`}
+                >
+                  <div className="flex items-center justify-between text-xs mb-1.5">
+                    <span className={`font-mono font-semibold ${isWinner ? 'text-brand-blue dark:text-brand-electric' : 'text-light-textPrimary dark:text-dark-textPrimary'}`}>
+                      {className}
+                    </span>
+                    <span className="font-mono text-xs font-semibold">{percentage}%</span>
+                  </div>
+                  <div className="w-full bg-light-secondary dark:bg-dark-secondary h-1.5 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${isWinner ? 'bg-brand-cyan' : 'bg-light-textMuted/40 dark:bg-dark-textMuted/40'}`}
+                      style={{ width: `${Math.max(prob * 100, 2)}%` }}
+                    ></div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
