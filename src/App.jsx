@@ -1,21 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
-import HowItWorks from './components/HowItWorks';
+import InteractiveSpectralGraph from './components/InteractiveSpectralGraph';
 import InteractiveWorkflow3D from './components/InteractiveWorkflow3D';
-import KeyMetrics from './components/KeyMetrics';
-import TargetClassesSection from './components/TargetClassesSection';
-import WhyHyperspectral from './components/WhyHyperspectral';
+import PathogenAtlas from './components/PathogenAtlas';
 import AnalyzeWorkspace, { BENCHMARK_SAMPLES } from './components/AnalyzeWorkspace';
 import PredictionResult from './components/PredictionResult';
+import PerformanceLab from './components/PerformanceLab';
+import WhyHyperspectral from './components/WhyHyperspectral';
+import ResearchSection from './components/ResearchSection';
 import Footer from './components/Footer';
+import InteractiveLabBackground from './components/InteractiveLabBackground';
 
 const API_BASE_URL =
   (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
   'https://my-backend-biofilm-app-1.onrender.com';
 
 export default function App() {
-  const [isDarkMode, setIsDarkMode] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
   const [currentPreset, setCurrentPreset] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -28,32 +29,6 @@ export default function App() {
 
   const resultsRef = useRef(null);
   const workspaceRef = useRef(null);
-
-  // Initialize theme from localStorage or default to dark
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('biofilm_theme');
-    if (savedTheme === 'light') {
-      setIsDarkMode(false);
-      document.documentElement.classList.remove('dark');
-    } else {
-      setIsDarkMode(true);
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    setIsDarkMode((prev) => {
-      const next = !prev;
-      if (next) {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('biofilm_theme', 'dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('biofilm_theme', 'light');
-      }
-      return next;
-    });
-  };
 
   const checkBackendStatus = async () => {
     setIsCheckingHealth(true);
@@ -106,7 +81,7 @@ export default function App() {
   };
 
   const navigateToWorkflow = () => {
-    document.getElementById('workflow')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('pipeline-3d')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const runAnalysis = async () => {
@@ -167,10 +142,10 @@ export default function App() {
       console.warn('API execution notice:', err);
     }
 
-    // Benchmark fallback for instant testing when server is warming up
+    // Benchmark fallback for instant responsive testing when cold server is spinning up
     if (!apiSuccess) {
-      // Simulate realistic processing time
-      await new Promise((r) => setTimeout(r, 1400));
+      // Simulate realistic scientific processing duration
+      await new Promise((r) => setTimeout(r, 1600));
 
       const classLabels = [
         'Escherichia coli',
@@ -218,7 +193,7 @@ export default function App() {
     setPredictionResult(resultPayload);
     setIsAnalyzing(false);
 
-    // Scroll smoothly to results
+    // Smooth scroll to results
     setTimeout(() => {
       document.getElementById('results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 150);
@@ -231,38 +206,31 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-light-bg dark:bg-dark-bg text-light-textPrimary dark:text-dark-textPrimary flex flex-col faint-grid transition-colors duration-200">
-      {/* Navigation */}
-      <Navbar
-        isDarkMode={isDarkMode}
-        onToggleTheme={toggleTheme}
-      />
+    <div className="min-h-screen bg-[#061A14] text-[#F4FFF9] flex flex-col relative transition-colors duration-200 overflow-x-hidden">
+      {/* 0. Ambient Interactive Laboratory Background (Particles, Filaments, Ripples, & Laser Beams) */}
+      <InteractiveLabBackground />
+
+      {/* 1. Floating Modern Laboratory Navbar */}
+      <Navbar onNavigateAnalyze={navigateToAnalyze} />
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-8 space-y-4">
-        {/* 1. HERO SECTION (Split composition with floating 3D Hyperspectral Data Cube) */}
+        {/* 2. HERO SECTION (Split composition with 3D Biofilm visualization) */}
         <HeroSection
-          isDarkMode={isDarkMode}
           onNavigateAnalyze={navigateToAnalyze}
           onNavigateWorkflow={navigateToWorkflow}
         />
 
-        {/* 2. HOW IT WORKS (01 to 04 Horizontal Progression) */}
-        <HowItWorks />
+        {/* 3. INTERACTIVE LIVE SPECTRAL GRAPH (400 - 1000 nm Live Probe) */}
+        <InteractiveSpectralGraph />
 
-        {/* 3. INTERACTIVE SCIENTIFIC WORKFLOW (3D Pipeline transformation) */}
-        <InteractiveWorkflow3D isDarkMode={isDarkMode} />
+        {/* 4. INTERACTIVE 3D PIPELINE MODELS (Data Cube -> Calibration -> PCA -> CNN -> Softmax) */}
+        <InteractiveWorkflow3D />
 
-        {/* 4. KEY PROJECT METRICS (Horizontal metric strip) */}
-        <KeyMetrics />
+        {/* 5. PATHOGEN ATLAS (6-Class Taxonomic Collection & Modal Inspector) */}
+        <PathogenAtlas onSelectClass={handleClassSelection} />
 
-        {/* 5. SIX-CLASS TARGET VISUALIZATION */}
-        <TargetClassesSection onSelectClass={handleClassSelection} />
-
-        {/* 6. WHY HYPERSPECTRAL IMAGING (Scientific rationale & table) */}
-        <WhyHyperspectral />
-
-        {/* 7. ANALYZE WORKSPACE (Calm scientific workspace & TIFF upload) */}
+        {/* 8. BIOFILM ANALYZER (Scientific Instrument Dropzone & TIFF Ingestion) */}
         <div ref={workspaceRef}>
           <AnalyzeWorkspace
             onFileSelected={handleFileSelected}
@@ -270,11 +238,10 @@ export default function App() {
             isAnalyzing={isAnalyzing}
             selectedFile={selectedFile}
             currentPreset={currentPreset}
-            isDarkMode={isDarkMode}
           />
         </div>
 
-        {/* 9. PREDICTION RESULT REVEAL */}
+        {/* 9. AI PREDICTION RESULT REVEAL & ATTENTION MAP */}
         <div ref={resultsRef}>
           {predictionResult && (
             <PredictionResult
@@ -283,9 +250,18 @@ export default function App() {
             />
           )}
         </div>
+
+        {/* 10. AI PERFORMANCE LAB (85.3% Val Acc, Confusion Matrix, ROC) */}
+        <PerformanceLab />
+
+        {/* 11. WHY HYPERSPECTRAL AI? (Scientific Comparison Matrix) */}
+        <WhyHyperspectral />
+
+        {/* 12. RESEARCH BEHIND BIOFILM AI (Paper showcase, DOI, summary) */}
+        <ResearchSection />
       </main>
 
-      {/* Footer */}
+      {/* 13. Laboratory Footer & Live API Health Inspector */}
       <Footer
         backendHealth={backendHealth}
         backendInfo={backendInfo}
@@ -295,3 +271,4 @@ export default function App() {
     </div>
   );
 }
+

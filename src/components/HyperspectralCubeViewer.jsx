@@ -1,7 +1,11 @@
 import React, { useEffect, useRef } from 'react';
+import { getBiofilmByQuery, mainBiofilmImg } from '../utils/biofilmAssets';
 
-export default function HyperspectralCubeViewer({ isDarkMode = true, isScanning = false, sampleName = null }) {
+export default function HyperspectralCubeViewer({ isScanning = false, sampleName = null, target = null }) {
   const containerRef = useRef(null);
+
+  const matchedBiofilm = target || sampleName ? getBiofilmByQuery(target || sampleName) : null;
+  const activeImage = matchedBiofilm ? matchedBiofilm.image : mainBiofilmImg;
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -33,20 +37,25 @@ export default function HyperspectralCubeViewer({ isDarkMode = true, isScanning 
       controls.minDistance = 8;
     }
 
-    // Soft uniform studio lighting (No harsh central blown-out point lights)
-    const ambientLight = new THREE.AmbientLight(0xffffff, isDarkMode ? 0.95 : 1.25);
+    // Studio lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0x18C7D1, 1.2);
+    const dirLight1 = new THREE.DirectionalLight(0x48F5A3, 1.5);
     dirLight1.position.set(15, 20, 15);
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0x7568F7, 0.9);
+    const dirLight2 = new THREE.DirectionalLight(0x18C77A, 1.0);
     dirLight2.position.set(-15, -12, -15);
     scene.add(dirLight2);
 
     const cubeGroup = new THREE.Group();
     scene.add(cubeGroup);
+
+    // Texture Loader for real Biofilm image
+    const textureLoader = new THREE.TextureLoader();
+    const biofilmTexture = textureLoader.load(activeImage);
+    biofilmTexture.colorSpace = THREE.SRGBColorSpace || THREE.sRGBEncoding;
 
     // Cube Configuration
     const cubeWidth = 7.5;
@@ -55,78 +64,49 @@ export default function HyperspectralCubeViewer({ isDarkMode = true, isScanning 
     const layersCount = 9;
     const layerSpacing = cubeHeight / (layersCount - 1);
 
-    // 1. Clean Bounding Box Edges (NO diagonal wireframe triangles)
+    // 1. Clean Bounding Box Edges
     const boxGeom = new THREE.BoxGeometry(cubeWidth, cubeHeight, cubeDepth);
     const edgesGeom = new THREE.EdgesGeometry(boxGeom);
     const edgesMat = new THREE.LineBasicMaterial({
-      color: isDarkMode ? 0x233B50 : 0xD8E3EA,
+      color: 0x1B4435,
       transparent: true,
-      opacity: isDarkMode ? 0.65 : 0.9,
+      opacity: 0.75,
       linewidth: 1.5
     });
     const boxEdges = new THREE.LineSegments(edgesGeom, edgesMat);
     cubeGroup.add(boxEdges);
 
-    // 2. Continuous Spectral Wavelength Planes (400nm -> 1000nm Gradient)
+    // 2. Continuous Spectral Wavelength Planes
     const spectralColors = [
-      0x0B3C70, // 400nm Deep UV
-      0x1261A0, // 480nm Blue
-      0x10AFC0, // 540nm Cyan
-      0x18C7D1, // 600nm Hyperspectral Cyan
-      0x29C98A, // 660nm Biofilm Green
-      0x35B9E9, // 720nm Electric Blue
-      0x665BE8, // 800nm NIR Violet
-      0x7568F7, // 900nm Deep Violet
-      0x9B91FF  // 1000nm IR
+      0x061A14, // 400nm Deep Green
+      0x0A241B, // 480nm
+      0x0D2B20, // 540nm
+      0x11382A, // 600nm
+      0x18C77A, // 660nm Emerald
+      0x20E08B, // 720nm Bright Emerald
+      0x48F5A3, // 800nm Luminous
+      0x9BEFCE, // 900nm Mint
+      0x18C77A  // 1000nm NIR
     ];
-
-    const planeMeshes = [];
-
-    // Generate procedural biological heatmap texture for the top spatial slice
-    const createBiofilmTexture = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 256;
-      canvas.height = 256;
-      const ctx = canvas.getContext('2d');
-
-      // Base background
-      ctx.fillStyle = '#0B1726';
-      ctx.fillRect(0, 0, 256, 256);
-
-      // Radial biofilm colony patches
-      const colonies = [
-        { x: 100, y: 110, r: 65, color: 'rgba(24, 199, 209, 0.7)' },
-        { x: 170, y: 150, r: 50, color: 'rgba(117, 104, 247, 0.65)' },
-        { x: 80, y: 180, r: 40, color: 'rgba(53, 185, 233, 0.6)' },
-        { x: 180, y: 80, r: 45, color: 'rgba(18, 97, 160, 0.75)' }
-      ];
-
-      colonies.forEach((c) => {
-        const grad = ctx.createRadialGradient(c.x, c.y, 4, c.x, c.y, c.r);
-        grad.addColorStop(0, c.color);
-        grad.addColorStop(0.7, c.color.replace(/[\d\.]+\)$/, '0.25)'));
-        grad.addColorStop(1, 'transparent');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      const texture = new THREE.CanvasTexture(canvas);
-      return texture;
-    };
-
-    const topTexture = createBiofilmTexture();
 
     for (let i = 0; i < layersCount; i++) {
       const isTopLayer = i === layersCount - 1;
-      const planeGeom = new THREE.PlaneGeometry(cubeWidth * 0.98, cubeDepth * 0.98);
+      const planeGeom = new THREE.PlaneGeometry(cubeWidth * 0.98, cubeDepth * 0.98, 12, 12);
+
+      const pos = planeGeom.attributes.position;
+      for (let j = 0; j < pos.count; j++) {
+        const u = pos.getX(j);
+        const v = pos.getY(j);
+        const z = Math.sin(u * 0.35 + i * 0.6) * Math.cos(v * 0.35) * 0.18;
+        pos.setZ(j, z);
+      }
+      planeGeom.computeVertexNormals();
 
       const mat = new THREE.MeshStandardMaterial({
         color: isTopLayer ? 0xffffff : spectralColors[i],
-        map: isTopLayer ? topTexture : null,
+        map: isTopLayer ? biofilmTexture : null,
         transparent: true,
-        opacity: isTopLayer ? 0.85 : isDarkMode ? 0.32 : 0.42,
+        opacity: isTopLayer ? 0.95 : 0.35,
         roughness: 0.35,
         metalness: 0.2,
         side: THREE.DoubleSide
@@ -136,15 +116,14 @@ export default function HyperspectralCubeViewer({ isDarkMode = true, isScanning 
       plane.rotation.x = -Math.PI / 2;
       plane.position.y = (i - (layersCount - 1) / 2) * layerSpacing;
       cubeGroup.add(plane);
-      planeMeshes.push(plane);
 
-      // Subtle edge line for each spectral plane
+      // Edge line for each plane
       const planeEdge = new THREE.LineSegments(
         new THREE.EdgesGeometry(planeGeom),
         new THREE.LineBasicMaterial({
-          color: spectralColors[i],
+          color: isTopLayer ? 0x48F5A3 : 0x18C77A,
           transparent: true,
-          opacity: 0.5
+          opacity: isTopLayer ? 0.85 : 0.45
         })
       );
       planeEdge.rotation.x = -Math.PI / 2;
@@ -153,75 +132,41 @@ export default function HyperspectralCubeViewer({ isDarkMode = true, isScanning 
     }
 
     // 3. Precision Laser Sweep Plane
-    const scanGeom = new THREE.PlaneGeometry(cubeWidth * 1.02, cubeDepth * 1.02);
-    const scanMat = new THREE.MeshBasicMaterial({
-      color: 0x18C7D1,
+    const laserGeom = new THREE.PlaneGeometry(cubeWidth * 1.05, cubeDepth * 1.05);
+    const laserMat = new THREE.MeshBasicMaterial({
+      color: 0x48F5A3,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.4,
       side: THREE.DoubleSide
     });
-    const scanPlane = new THREE.Mesh(scanGeom, scanMat);
-    scanPlane.rotation.x = -Math.PI / 2;
-    cubeGroup.add(scanPlane);
+    const laserPlane = new THREE.Mesh(laserGeom, laserMat);
+    laserPlane.rotation.x = -Math.PI / 2;
+    cubeGroup.add(laserPlane);
 
-    // Laser border line
-    const scanEdge = new THREE.LineSegments(
-      new THREE.EdgesGeometry(scanGeom),
-      new THREE.LineBasicMaterial({ color: 0x18C7D1, transparent: true, opacity: 0.95 })
+    // Laser outer rim
+    const laserRing = new THREE.LineSegments(
+      new THREE.EdgesGeometry(laserGeom),
+      new THREE.LineBasicMaterial({ color: 0x48F5A3, linewidth: 2 })
     );
-    scanEdge.rotation.x = -Math.PI / 2;
-    scanPlane.add(scanEdge);
+    laserRing.rotation.x = -Math.PI / 2;
+    laserPlane.add(laserRing);
 
-    // 4. Subtle Photon / Optical Particles
-    const particleCount = 80;
-    const particleGeom = new THREE.BufferGeometry();
-    const particlePositions = new Float32Array(particleCount * 3);
-    const particleColors = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount; i++) {
-      particlePositions[i * 3] = (Math.random() - 0.5) * (cubeWidth * 1.2);
-      particlePositions[i * 3 + 1] = (Math.random() - 0.5) * (cubeHeight * 1.1);
-      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * (cubeDepth * 1.2);
-
-      const isCyan = i % 2 === 0;
-      particleColors[i * 3] = isCyan ? 0.09 : 0.46;
-      particleColors[i * 3 + 1] = isCyan ? 0.78 : 0.41;
-      particleColors[i * 3 + 2] = isCyan ? 0.82 : 0.97;
-    }
-
-    particleGeom.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    particleGeom.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
-
-    const particleMat = new THREE.PointsMaterial({
-      size: 0.18,
-      vertexColors: true,
-      transparent: true,
-      opacity: isDarkMode ? 0.7 : 0.6
-    });
-
-    const particles = new THREE.Points(particleGeom, particleMat);
-    cubeGroup.add(particles);
-
-    // Animation Loop
+    // 4. Animation Loop
     let animationId;
     let clock = new THREE.Clock();
 
     const animate = () => {
       animationId = requestAnimationFrame(animate);
-      const elapsedTime = clock.getElapsedTime();
 
       if (controls) controls.update();
 
-      // Gentle continuous rotation
-      cubeGroup.rotation.y = elapsedTime * 0.16;
-      cubeGroup.rotation.x = Math.sin(elapsedTime * 0.3) * 0.06;
+      const elapsedTime = clock.getElapsedTime();
+      cubeGroup.rotation.y = elapsedTime * (isScanning ? 0.35 : 0.15);
 
-      // Laser scan sweep
-      const scanSpeed = isScanning ? 4.5 : 1.8;
-      scanPlane.position.y = Math.sin(elapsedTime * scanSpeed) * (cubeHeight * 0.46);
-
-      // Particle subtle motion
-      particles.rotation.y = -elapsedTime * 0.05;
+      // Sweep laser vertically through the cube
+      const sweepSpeed = isScanning ? 2.8 : 1.2;
+      const progress = (Math.sin(elapsedTime * sweepSpeed) + 1) / 2;
+      laserPlane.position.y = (progress - 0.5) * cubeHeight;
 
       renderer.render(scene, camera);
     };
@@ -247,11 +192,26 @@ export default function HyperspectralCubeViewer({ isDarkMode = true, isScanning 
       }
       renderer.dispose();
     };
-  }, [isDarkMode, isScanning, sampleName]);
+  }, [sampleName, target, isScanning]);
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center">
+    <div className="relative w-full h-[380px] sm:h-[430px] rounded-2xl bg-[#0A241B]/70 border border-[#1B4435] overflow-hidden">
       <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+
+      {/* Specimen Tag Overlay */}
+      <div className="absolute top-3 left-4 flex items-center gap-2.5 text-xs font-mono text-[#F4FFF9] bg-[#0D2B20]/90 backdrop-blur-md px-3.5 py-1.5 rounded-lg border border-[#1B4435] shadow-sm pointer-events-none">
+        <img
+          src={activeImage}
+          alt={matchedBiofilm ? matchedBiofilm.name : 'Biofilm Reference'}
+          className="w-4 h-4 rounded-full object-cover border border-[#48F5A3]"
+        />
+        <span className="h-2 w-2 rounded-full bg-[#48F5A3] animate-pulse"></span>
+        <span>{matchedBiofilm ? `${matchedBiofilm.short} HSI Tensor` : 'Biofilm Reference Cube'}</span>
+      </div>
+
+      <div className="absolute bottom-3 right-4 pointer-events-none text-[10px] font-mono text-[#829A90] bg-[#061A14]/80 px-2 py-0.5 rounded border border-[#1B4435]">
+        🖱 Drag to Orbit • Scroll to Zoom
+      </div>
     </div>
   );
 }

@@ -7,201 +7,213 @@
 }
 
 /* ========================================================
-   BIOFILM AI — SCIENTIFIC RESEARCH & PRODUCT DESIGN SYSTEM
+   BIOFILM AI — DIGITAL HYPERSPECTRAL LABORATORY DESIGN SYSTEM
+   DEEP LABORATORY GREEN × PRIMARY EMERALD × SOFT MINT
    ======================================================== */
 
 :root {
-  color-scheme: light dark;
-}
-
-/* LIGHT THEME (Crisp Clinical Analytics Platform) */
-html:not(.dark) {
-  --bg-main: #F6F9FC;
-  --bg-secondary: #EDF3F7;
-  --bg-card: #FFFFFF;
-  --bg-elevated: #F9FCFE;
+  color-scheme: dark;
+  --lab-base: #061A14;
+  --lab-dark: #0A241B;
+  --lab-card: #0D2B20;
+  --lab-elevated: #11382A;
+  --lab-highest: #174735;
+  --lab-border: #1B4435;
+  --lab-border-glow: #28634E;
   
-  --text-primary: #102A43;
-  --text-secondary: #506579;
-  --text-muted: #74899A;
+  --lab-emerald: #18C77A;
+  --lab-bright: #48F5A3;
+  --lab-mint: #9BEFCE;
+  --lab-white: #F4FFF9;
+  --lab-text-sec: #B4C9C0;
+  --lab-text-muted: #829A90;
   
-  --border-color: #D8E3EA;
-  --border-subtle: #E6EDF2;
-  --border-accent: #10AFC0;
+  --lab-warning: #F5C451;
+  --lab-error: #FF5C6C;
   
-  --brand-primary: #1261A0;
-  --brand-cyan: #10AFC0;
-  --brand-electric: #237FB3;
-  --brand-violet: #665BE8;
-  
-  --status-success: #179B68;
-  --status-warning: #C68B19;
-  --status-error: #C94B4B;
-  
-  --card-shadow: 0 1px 3px 0 rgba(16, 42, 67, 0.04), 0 1px 2px -1px rgba(16, 42, 67, 0.03);
-  --card-shadow-elevated: 0 4px 16px -2px rgba(16, 42, 67, 0.06), 0 2px 6px -1px rgba(16, 42, 67, 0.03);
-}
-
-/* DARK THEME (Advanced AI Research Laboratory) */
-html.dark {
-  --bg-main: #07111F;
-  --bg-secondary: #0B1726;
-  --bg-card: #0F2032;
-  --bg-elevated: #13283C;
-  --bg-highest: #172F46;
-  
-  --text-primary: #F4F8FC;
-  --text-secondary: #A9B9C9;
-  --text-muted: #71879B;
-  
-  --border-color: #233B50;
-  --border-subtle: #1A3043;
-  --border-accent: #18C7D1;
-  
-  --brand-primary: #1261A0;
-  --brand-cyan: #18C7D1;
-  --brand-electric: #35B9E9;
-  --brand-violet: #7568F7;
-  
-  --status-success: #29C98A;
-  --status-warning: #F0BA4B;
-  --status-error: #FF6B6B;
-  
-  --card-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.25);
-  --card-shadow-elevated: 0 8px 24px -4px rgba(0, 0, 0, 0.45);
+  --glass-bg: rgba(13, 43, 32, 0.65);
+  --glass-border: rgba(72, 245, 163, 0.15);
+  --glass-glow: 0 0 25px rgba(24, 199, 122, 0.12);
 }
 
 body {
-  background-color: var(--bg-main);
-  color: var(--text-primary);
+  background-color: var(--lab-base);
+  color: var(--lab-white);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'tnum';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   min-height: 100vh;
-  letter-spacing: -0.011em;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  letter-spacing: -0.012em;
+  overflow-x: hidden;
 }
 
-/* Headings with Space Grotesk */
+/* Scientific Headings with Space Grotesk */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Space Grotesk', 'Inter', sans-serif;
   letter-spacing: -0.025em;
   font-weight: 700;
+  color: var(--lab-white);
 }
 
-/* Monospace restricted strictly to technical metrics */
+/* Technical Data and Metric labels */
 .font-mono {
   font-family: 'JetBrains Mono', monospace;
   font-feature-settings: 'zero', 'tnum';
 }
 
-/* Minimal Custom Scrollbar */
+/* Custom Scientific Emerald Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+  background: var(--lab-base);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-color);
+  background: var(--lab-border);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--brand-cyan);
+  background: var(--lab-emerald);
+  box-shadow: 0 0 8px rgba(72, 245, 163, 0.4);
 }
 
 /* ========================================================
-   SIGNATURE BRAND GRADIENT
-   #1261A0 -> #18C7D1 -> #7568F7
+   SIGNATURE EMERALD GRADIENTS & ACCENTS
    ======================================================== */
-.signature-gradient {
-  background: linear-gradient(135deg, #1261A0 0%, #18C7D1 50%, #7568F7 100%);
+.emerald-gradient {
+  background: linear-gradient(135deg, #0A241B 0%, #18C77A 50%, #48F5A3 100%);
 }
 
-.signature-gradient-text {
-  background: linear-gradient(135deg, #1261A0 0%, #18C7D1 50%, #7568F7 100%);
+.emerald-gradient-btn {
+  background: linear-gradient(135deg, #18C77A 0%, #20E08B 60%, #48F5A3 100%);
+  color: #061A14;
+  box-shadow: 0 4px 20px -2px rgba(24, 199, 122, 0.35);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.emerald-gradient-btn:hover {
+  box-shadow: 0 6px 28px -2px rgba(72, 245, 163, 0.55);
+  transform: translateY(-1px);
+}
+.emerald-gradient-btn:active {
+  transform: scale(0.985);
+}
+
+.emerald-gradient-text {
+  background: linear-gradient(135deg, #F4FFF9 20%, #48F5A3 65%, #18C77A 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-html.dark .signature-gradient-text {
-  background: linear-gradient(135deg, #35B9E9 0%, #18C7D1 50%, #9B91FF 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.mint-glow-text {
+  text-shadow: 0 0 20px rgba(72, 245, 163, 0.3);
 }
 
 /* ========================================================
-   PREMIUM SCIENTIFIC CARD SYSTEM
+   LABORATORY SURFACE CARDS & GLASSMORPHISM
    ======================================================== */
-.sci-surface {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--card-shadow);
-  border-radius: 1.125rem; /* 18px */
-  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+.lab-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
 }
 
-.sci-surface-elevated {
-  background-color: var(--bg-elevated);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--card-shadow-elevated);
+.lab-surface {
+  background-color: var(--lab-card);
+  border: 1px solid var(--lab-border);
   border-radius: 1.125rem; /* 18px */
-  transition: all 0.2s ease;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 
-.sci-surface-interactive {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--card-shadow);
+.lab-surface-interactive {
+  background-color: var(--lab-card);
+  border: 1px solid var(--lab-border);
   border-radius: 1.125rem;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 24px 0 rgba(0, 0, 0, 0.3);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.sci-surface-interactive:hover {
-  border-color: var(--border-accent);
+.lab-surface-interactive:hover {
+  border-color: rgba(72, 245, 163, 0.4);
+  box-shadow: 0 12px 36px -4px rgba(24, 199, 122, 0.15);
   transform: translateY(-2px);
 }
-html.dark .sci-surface-interactive:hover {
-  box-shadow: 0 8px 24px -4px rgba(24, 199, 209, 0.1);
-}
 
-/* Faint, elegant scientific grid for hero & visualization backgrounds */
-.faint-grid {
-  background-size: 32px 32px;
+/* Faint, precise scientific laboratory grid */
+.lab-grid {
+  background-size: 40px 40px;
   background-image: 
-    linear-gradient(to right, rgba(18, 97, 160, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(18, 97, 160, 0.035) 1px, transparent 1px);
-}
-html.dark .faint-grid {
-  background-image: 
-    linear-gradient(to right, rgba(53, 185, 233, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(53, 185, 233, 0.03) 1px, transparent 1px);
+    linear-gradient(to right, rgba(24, 199, 122, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(24, 199, 122, 0.04) 1px, transparent 1px);
 }
 
-/* Laser sweep animation for data ingestion */
-@keyframes laser-sweep {
-  0% { top: 0%; opacity: 0.6; }
-  50% { opacity: 0.9; }
-  100% { top: 100%; opacity: 0.2; }
+.lab-radial-glow {
+  background: radial-gradient(circle at 50% 0%, rgba(24, 199, 122, 0.12) 0%, rgba(6, 26, 20, 0) 70%);
 }
 
-.laser-scanner {
+/* ========================================================
+   SIGNATURE SPECTRAL SCAN LINE ANIMATIONS
+   ======================================================== */
+@keyframes spectral-laser-sweep {
+  0% { top: 0%; opacity: 0.8; }
+  50% { opacity: 1; filter: drop-shadow(0 0 12px #48F5A3); }
+  100% { top: 100%; opacity: 0.3; }
+}
+
+.spectral-scan-line {
   position: absolute;
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #18C7D1, #7568F7, transparent);
-  box-shadow: 0 0 10px rgba(24, 199, 209, 0.4);
-  animation: laser-sweep 2.4s ease-in-out infinite;
+  background: linear-gradient(90deg, transparent, #18C77A, #48F5A3, #9BEFCE, transparent);
+  box-shadow: 0 0 14px rgba(72, 245, 163, 0.7);
+  animation: spectral-laser-sweep 2.6s ease-in-out infinite;
+  pointer-events: none;
 }
 
-/* Pulse animation for node interaction */
-@keyframes pulse-subtle {
+@keyframes pulse-emerald {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.75; transform: scale(1.04); }
+  50% { opacity: 0.7; transform: scale(1.03); }
 }
-.animate-pulse-subtle {
-  animation: pulse-subtle 3s ease-in-out infinite;
+.animate-pulse-emerald {
+  animation: pulse-emerald 2.8s ease-in-out infinite;
+}
+
+/* Hanging Sheet 3D Perspective Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(1.5deg); }
+}
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+@keyframes grid-shimmer {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.9; }
+}
+
+/* Reduced Motion Respect */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
