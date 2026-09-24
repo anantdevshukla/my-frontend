@@ -71,7 +71,7 @@ export default function ProjectOverview() {
               <tr>
                 <th className="py-2.5 px-4 font-semibold">Modality Parameter</th>
                 <th className="py-2.5 px-4">Standard RGB Microscopy</th>
-                <th className="py-2.5 px-4 text-brand-blue dark:text-brand-electric font-bold">Biofilm AI Hyperspectral</th>
+                <th className="py-2.5 px-4 text-brand-blue dark:text-brand-electric font-bold">SPECTRAL AI Hyperspectral</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-light-border dark:divide-dark-border text-light-textSecondary dark:text-dark-textSecondary">

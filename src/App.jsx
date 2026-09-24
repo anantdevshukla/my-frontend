@@ -257,7 +257,7 @@ export default function App() {
         {/* 11. WHY HYPERSPECTRAL AI? (Scientific Comparison Matrix) */}
         <WhyHyperspectral />
 
-        {/* 12. RESEARCH BEHIND BIOFILM AI (Paper showcase, DOI, summary) */}
+        {/* 12. RESEARCH BEHIND SPECTRAL AI (Paper showcase, DOI, summary) */}
         <ResearchSection />
       </main>
 

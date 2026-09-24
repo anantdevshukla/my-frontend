@@ -41,7 +41,7 @@ export default function Navbar({ onNavigateAnalyze }) {
           <div>
             <div className="flex items-center gap-2">
               <span className="text-base font-bold font-display tracking-tight text-[#F4FFF9]">
-                BIOFILM <span className="text-[#48F5A3]">AI</span>
+                SPECTRAL <span className="text-[#48F5A3]">AI</span>
               </span>
               <span className="px-2 py-0.5 rounded text-[9px] font-mono font-semibold bg-[#11382A] text-[#48F5A3] border border-[#1B4435] uppercase tracking-wider">
                 Digital Lab

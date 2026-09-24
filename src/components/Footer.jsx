@@ -20,7 +20,7 @@ export default function Footer({
         <div className="space-y-1 text-center md:text-left">
           <div className="flex items-center justify-center md:justify-start gap-2.5">
             <span className="font-bold text-[#F4FFF9] font-display text-base tracking-tight">
-              BIOFILM <span className="text-[#48F5A3]">AI</span>
+              SPECTRAL <span className="text-[#48F5A3]">AI</span>
             </span>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#0D2B20] text-[#48F5A3] border border-[#1B4435]">
               Digital Lab
@@ -89,7 +89,7 @@ export default function Footer({
 
       <div className="max-w-7xl mx-auto mt-8 pt-6 border-t border-[#1B4435]/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] font-mono text-[#829A90]">
         <div>
-          © {new Date().getFullYear()} Biofilm AI Research Platform. All rights reserved.
+          © {new Date().getFullYear()} SPECTRAL AI Research Platform. All rights reserved.
         </div>
         <div>
           Non-Destructive Microbial Decision Support System

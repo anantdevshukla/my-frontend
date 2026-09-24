@@ -24,7 +24,7 @@ export default function WhyHyperspectral() {
               <tr>
                 <th className="py-3.5 px-5 font-semibold">Modality Parameter</th>
                 <th className="py-3.5 px-5 text-[#829A90]">Standard RGB Microscopy</th>
-                <th className="py-3.5 px-5 text-[#48F5A3] font-bold">Biofilm AI Hyperspectral</th>
+                <th className="py-3.5 px-5 text-[#48F5A3] font-bold">SPECTRAL AI Hyperspectral</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#1B4435] text-[#B4C9C0] font-normal">
